@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 export default function App() {
+  const [nums, setNums] = useState("");
   const inputRef = useRef(null);
 
   // for focus input
@@ -18,40 +19,74 @@ export default function App() {
     };
   }, []);
 
+  console.log(nums);
+
   return (
-    <div className="bg-black w-full h-[100vh]">
-      <div className="flex items-center w-full h-[25%] border-b">
+    <div className="w-full h-screen lg:w-1/3 lg:h-auto mx-auto border">
+      <div className="h-1/5">
         <input
-          type="number"
-          dir="rtl"
           ref={inputRef}
-          className="w-full rounded-lg text-[125px] text-white outline-none caret-transparent bg-[#2A2A2A]"
+          value={nums}
+          onChange={(e) => setNums(e.target.value)}
+          className="w-full h-full border text-[100px] font-bold outline-none caret-slate-400"
         />
       </div>
-      <div className="flex ">
-        <div className="grid grid-cols-3 grid-rows-3 gap-5 w-[75%] h-[75vh] place-items-center">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "."].map((el) => (
-            <div
-              key={el}
-              className={`w-40 h-40 text-3xl rounded-full bg-white cursor-pointer text-black flex justify-center items-center ${
-                el === 0 ? "w-80 " : el === "." ? "col-span-2" : ""
+      <div className="flex h-4/5 py-2">
+        <div className="w-full grid grid-cols-4 items-center gap-3">
+          {[
+            "C",
+            "%",
+            "Del",
+            "/",
+            7,
+            8,
+            9,
+            "*",
+            4,
+            5,
+            6,
+            "+",
+            1,
+            2,
+            3,
+            "-",
+            0,
+            ".",
+            "=",
+          ].map((num) => (
+            <button
+              key={num}
+              className={`bg-black rounded-full text-white text-3xl h-24 w-24 mx-auto ${
+                num === 0
+                  ? "col-span-2 w-52"
+                  : ["*", "/", "+", "-", "=", "C", "%", "Del"].includes(num)
+                  ? "bg-gray-900"
+                  : ""
               }`}
+              onClick={() =>
+                num === "="
+                  ? setNums(String(eval(nums)))
+                  : num === "C"
+                  ? setNums("")
+                  : num === "Del"
+                  ? setNums((n) => n.split("").slice(0, -1).join(""))
+                  : setNums((n) => n + num)
+              }
             >
-              {el}
-            </div>
+              {num}
+            </button>
           ))}
         </div>
-
-        <div className="w-[25%] h-full flex flex-col gap-20 justify-center items-center">
-          {["/", "*", "-", "+", "="].map((el) => (
-            <div
+        {/* <div className="w-1/3 lg:w-1/5 flex flex-col justify-center gap-4 py-5">
+          {["/", "*", "+", "-", "="].map((el) => (
+            <button
               key={el}
-              className="w-20 h-20 text-3xl rounded-full bg-white cursor-pointer text-black flex justify-center items-center"
+              className="h-24 w-24 bg-black rounded-full text-white mx-auto"
             >
               {el}
-            </div>
+            </button>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );
