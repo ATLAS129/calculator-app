@@ -22,13 +22,13 @@ export default function App() {
   console.log(nums);
 
   return (
-    <div className="w-full h-screen lg:w-1/3 lg:h-auto mx-auto border">
+    <div className="w-full h-screen lg:w-1/3 lg:h-auto mx-auto border bg-[#A9A9A9]">
       <div className="h-1/5">
         <input
           ref={inputRef}
           value={nums}
           onChange={(e) => setNums(e.target.value)}
-          className="w-full h-full border text-[100px] font-bold outline-none caret-slate-400"
+          className="px-1 w-full h-full border-b border-slate-700 text-[100px] font-bold outline-none caret-slate-400 bg-[#A9A9A9]"
         />
       </div>
       <div className="flex h-4/5 py-2">
@@ -56,11 +56,11 @@ export default function App() {
           ].map((num) => (
             <button
               key={num}
-              className={`bg-black rounded-full text-white text-3xl h-24 w-24 mx-auto ${
+              className={`bg-[#6E6E6E] rounded-full text-white text-3xl h-20 w-20 sm:h-24 sm:w-24 lg:h-16 lg:w-16 xl:h-20 xl:w-20 mx-auto ${
                 num === 0
-                  ? "col-span-2 w-52"
+                  ? "col-span-2 w-44 sm:w-60 lg:w-36 xl:w-40"
                   : ["*", "/", "+", "-", "=", "C", "%", "Del"].includes(num)
-                  ? "bg-gray-900"
+                  ? "bg-[#3B3B3B]"
                   : ""
               }`}
               onClick={() =>
