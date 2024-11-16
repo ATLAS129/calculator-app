@@ -1,23 +1,51 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 
 export default function App() {
   const [nums, setNums] = useState("");
   const inputRef = useRef(null);
 
-  // for focus input
-  useEffect(() => {
-    const handleBlur = () => {
-      inputRef.current.focus();
-    };
+  setTimeout(() => {
+    if (inputRef.current) {
+      inputRef.current.scrollLeft = inputRef.current.scrollWidth;
+    }
+  }, 0);
 
-    const inputElement = inputRef.current;
-    inputElement.focus();
-    inputElement.addEventListener("blur", handleBlur);
+  const handleButtonClick = (value) => {
+    if (value === "%") {
+      setNums((prev) => {
+        const match = prev.match(/(\d+\.?\d*)([+\-*/])(\d+\.?\d*)$/); // Match base, operator, and percentage
+        if (!match) return prev;
 
-    return () => {
-      inputElement.removeEventListener("blur", handleBlur);
-    };
-  }, []);
+        const [, base, operator, percentage] = match;
+        const baseValue = parseFloat(base);
+        const percentValue = parseFloat(percentage);
+
+        const result =
+          operator === "*" || operator === "/"
+            ? percentValue / 100
+            : (baseValue * percentValue) / 100;
+
+        return prev.replace(
+          /(\d+\.?\d*)([+\-*/])(\d+\.?\d*)$/,
+          `${base}${operator}${result}`
+        );
+      });
+    } else {
+      setNums((prev) =>
+        value === "="
+          ? String(eval(nums))
+          : value === "C"
+          ? ""
+          : value === "Del"
+          ? prev.split("").slice(0, -1).join("")
+          : !["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].includes(
+              nums[nums.length - 1]
+            ) && value == nums[nums.length - 1]
+          ? null
+          : prev + value
+      );
+    }
+  };
 
   console.log(nums);
 
@@ -27,8 +55,9 @@ export default function App() {
         <input
           ref={inputRef}
           value={nums}
+          readOnly
           onChange={(e) => setNums(e.target.value)}
-          className="px-1 w-full h-full border-b border-slate-700 text-[100px] font-bold outline-none caret-slate-400 bg-[#A9A9A9]"
+          className="p-1 w-full h-full border-b border-slate-700 text-6xl sm:text-8xl lg:text-7xl font-bold outline-none caret-slate-400 bg-[#A9A9A9]"
         />
       </div>
       <div className="flex h-4/5 py-2">
@@ -56,37 +85,19 @@ export default function App() {
           ].map((num) => (
             <button
               key={num}
-              className={`bg-[#6E6E6E] rounded-full text-white text-3xl h-20 w-20 sm:h-24 sm:w-24 lg:h-16 lg:w-16 xl:h-20 xl:w-20 mx-auto ${
+              className={`bg-gray-500 hover:bg-gray-600 transition rounded-full text-white text-3xl h-20 w-20 sm:h-24 sm:w-24 lg:h-16 lg:w-16 xl:h-20 xl:w-20 mx-auto ${
                 num === 0
                   ? "col-span-2 w-44 sm:w-60 lg:w-36 xl:w-40"
                   : ["*", "/", "+", "-", "=", "C", "%", "Del"].includes(num)
                   ? "bg-[#3B3B3B]"
                   : ""
               }`}
-              onClick={() =>
-                num === "="
-                  ? setNums(String(eval(nums)))
-                  : num === "C"
-                  ? setNums("")
-                  : num === "Del"
-                  ? setNums((n) => n.split("").slice(0, -1).join(""))
-                  : setNums((n) => n + num)
-              }
+              onClick={() => handleButtonClick(num)}
             >
               {num}
             </button>
           ))}
         </div>
-        {/* <div className="w-1/3 lg:w-1/5 flex flex-col justify-center gap-4 py-5">
-          {["/", "*", "+", "-", "="].map((el) => (
-            <button
-              key={el}
-              className="h-24 w-24 bg-black rounded-full text-white mx-auto"
-            >
-              {el}
-            </button>
-          ))}
-        </div> */}
       </div>
     </div>
   );
